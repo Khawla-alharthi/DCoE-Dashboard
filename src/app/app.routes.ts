@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { AuthGuard } from './core/guards/auth.guard';
+import { RoleGuard } from './core/guards/role.guard';
 import { MainLayoutComponent } from './layout/main-layout/main-layout.component';
 import { AuthLayoutComponent } from './layout/auth-layout/auth-layout.component';
 
@@ -58,6 +59,7 @@ export const routes: Routes = [
         path: 'users',
         loadChildren: () => import('./features/users/users.routes')
           .then(r => r.usersRoutes),
+        canActivate: [RoleGuard],
         data: { requiresLeader: true }
       },
       

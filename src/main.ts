@@ -27,3 +27,6 @@ Chart.register(
   PointElement,
   LineElement
 );
+
+bootstrapApplication(AppComponent, appConfig)
+  .catch(err => console.error(err));

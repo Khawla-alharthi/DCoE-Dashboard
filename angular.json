@@ -62,7 +62,12 @@
               "buildTarget": "DCOEDashboard:build:development"
             }
           },
-          "defaultConfiguration": "development"
+          "defaultConfiguration": "development",
+          "options": {
+            "allowedHosts": [
+              "4200-i6owz8mfg9a8er5umom5i-c2c1e06c.manusvm.computer"
+            ]
+          }
         },
         "extract-i18n": {
           "builder": "@angular/build:extract-i18n"

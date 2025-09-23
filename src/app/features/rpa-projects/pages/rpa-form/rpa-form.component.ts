@@ -1,5 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
 import { DataTableComponent, TableColumn, TableAction } from '../../../../shared/components/data-table/data-table.component';
 import { ModalComponent } from '../../../../shared/components/modal/modal.component';
@@ -9,13 +9,21 @@ import { RoleService } from '../../../../core/services/role.service';
 import { NotificationService } from '../../../../core/services/notification.service';
 import { RpaProject } from '../../../../data-access/models/rpa-project.model';
 
+interface ProjectStatistics {
+  totalProjects: number;
+  totalValue: number;
+  totalManhourSavings: number;
+  totalRobots: number;
+}
+
 @Component({
-  selector: 'app-rpa-list',
+  selector: 'app-rpa-form',
   standalone: true,
   imports: [
     CommonModule,
     DataTableComponent,
-    ModalComponent
+    ModalComponent,
+    DatePipe
   ],
   template: `
     <div class="space-y-6">
@@ -210,7 +218,7 @@ import { RpaProject } from '../../../../data-access/models/rpa-project.model';
     </div>
   `
 })
-export class RpaListComponent implements OnInit {
+export class RpaFormComponent implements OnInit {
   private rpaProjectService = inject(RpaProjectService);
   private router = inject(Router);
   public authService = inject(AuthService);
@@ -218,7 +226,7 @@ export class RpaListComponent implements OnInit {
   private notificationService = inject(NotificationService);
 
   projects: RpaProject[] = [];
-  statistics: any = {};
+  statistics: ProjectStatistics | null = null;
   loading = true;
   
   // Modal states
@@ -356,9 +364,13 @@ export class RpaListComponent implements OnInit {
   calculateROI(project: RpaProject): number {
     // Simple ROI calculation: (Value Generated / Estimated Investment) * 100
     // Assuming average investment of $50K per robot
-  }
-
-  goBack(): void {
-    this.router.navigate(['/rpa-projects']);
+    const estimatedInvestment = project.robotsCount * 50000; // $50K per robot
+    
+    if (estimatedInvestment === 0) {
+      return 0;
+    }
+    
+    const roi = ((project.valueGenerated - estimatedInvestment) / estimatedInvestment) * 100;
+    return Math.round(roi * 100) / 100; // Round to 2 decimal places
   }
 }

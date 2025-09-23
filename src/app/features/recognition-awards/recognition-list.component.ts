@@ -1,7 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { DataTableComponent, TableColumn, TableAction } from '../../shared/components/data-table/data-table.component';
+
 import { ModalComponent } from '../../shared/components/modal/modal.component';
 import { CardComponent } from '../../shared/components/card/card.component';
 import { AuthService } from '../../core/services/auth.service';
@@ -24,7 +24,7 @@ interface Recognition {
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    DataTableComponent,
+
     ModalComponent,
     CardComponent
   ],

@@ -1,6 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { CardComponent } from '../../shared/components/card/card.component';
+
 import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
 import { CapabilityDevelopmentService } from '../../data-access/repositories/capability-development.repository';
 import { RoleService } from '../../core/services/role.service';
@@ -18,7 +18,7 @@ interface CapabilityCard {
 @Component({
   selector: 'app-capability-development',
   standalone: true,
-  imports: [CommonModule, CardComponent, LoadingSpinnerComponent],
+  imports: [CommonModule, LoadingSpinnerComponent],
   template: `
     <div class="space-y-6">
       <!-- Loading State -->

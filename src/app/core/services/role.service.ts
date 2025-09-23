@@ -1,7 +1,7 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { Injectable, signal, computed, inject } from '@angular/core';
 import { AuthService } from './auth.service';
 
-export type UserRole = 'leader' | 'user';
+export type UserRole = 'leader' | 'user' | 'admin' | 'viewer';
 
 export interface RolePermissions {
   canCreate: boolean;
@@ -11,6 +11,11 @@ export interface RolePermissions {
   canManageUsers: boolean;
   canViewReports: boolean;
   canExportData: boolean;
+  canManagePrograms: boolean;
+  canManageTeams: boolean;
+  canViewAnalytics: boolean;
+  canManageRecognition: boolean;
+  canAccessSettings: boolean;
 }
 
 @Injectable({
@@ -26,9 +31,20 @@ export class RoleService {
     return this.getRolePermissions(role);
   });
 
-  constructor(private authService: AuthService) {
+  private authService = inject(AuthService);
+
+  constructor() {
     // Initialize role from auth service or mock data
     this.initializeRole();
+    
+    // Subscribe to auth changes to update role
+    this.authService.currentUser$.subscribe(user => {
+      if (user) {
+        this.updateRoleFromUser(user);
+      } else {
+        this.setRole('viewer');
+      }
+    });
   }
 
   /**
@@ -74,19 +90,29 @@ export class RoleService {
     return perms.canCreate || perms.canUpdate || perms.canDelete;
   }
 
-  /**
-   * Get role display name
-   */
-  getRoleDisplayName(role?: UserRole): string {
-    const targetRole = role || this.currentRole();
-    return targetRole === 'leader' ? 'Team Leader' : 'Team Member';
-  }
+
 
   /**
    * Get role permissions based on role type
    */
   private getRolePermissions(role: UserRole): RolePermissions {
     switch (role) {
+      case 'admin':
+        return {
+          canCreate: true,
+          canRead: true,
+          canUpdate: true,
+          canDelete: true,
+          canManageUsers: true,
+          canViewReports: true,
+          canExportData: true,
+          canManagePrograms: true,
+          canManageTeams: true,
+          canViewAnalytics: true,
+          canManageRecognition: true,
+          canAccessSettings: true
+        };
+        
       case 'leader':
         return {
           canCreate: true,
@@ -95,10 +121,31 @@ export class RoleService {
           canDelete: true,
           canManageUsers: true,
           canViewReports: true,
-          canExportData: true
+          canExportData: true,
+          canManagePrograms: true,
+          canManageTeams: true,
+          canViewAnalytics: true,
+          canManageRecognition: true,
+          canAccessSettings: false
         };
       
       case 'user':
+        return {
+          canCreate: true,
+          canRead: true,
+          canUpdate: true,
+          canDelete: false,
+          canManageUsers: false,
+          canViewReports: true,
+          canExportData: false,
+          canManagePrograms: false,
+          canManageTeams: false,
+          canViewAnalytics: false,
+          canManageRecognition: false,
+          canAccessSettings: false
+        };
+        
+      case 'viewer':
       default:
         return {
           canCreate: false,
@@ -107,7 +154,12 @@ export class RoleService {
           canDelete: false,
           canManageUsers: false,
           canViewReports: true,
-          canExportData: false
+          canExportData: false,
+          canManagePrograms: false,
+          canManageTeams: false,
+          canViewAnalytics: false,
+          canManageRecognition: false,
+          canAccessSettings: false
         };
     }
   }
@@ -133,8 +185,72 @@ export class RoleService {
    * Switch role (for demo purposes)
    */
   switchRole(): void {
-    const newRole = this.currentRole() === 'leader' ? 'user' : 'leader';
+    const roles: UserRole[] = ['viewer', 'user', 'leader', 'admin'];
+    const currentIndex = roles.indexOf(this.currentRole());
+    const nextIndex = (currentIndex + 1) % roles.length;
+    const newRole = roles[nextIndex];
+    
     this.setRole(newRole);
     localStorage.setItem('dcoe-user-role', newRole);
+  }
+
+  /**
+   * Update role from authenticated user
+   */
+  private updateRoleFromUser(user: any): void {
+    if (user.isLeader) {
+      this.setRole('leader');
+    } else {
+      this.setRole('user');
+    }
+  }
+
+  /**
+   * Check if user is admin
+   */
+  isAdmin(): boolean {
+    return this.currentRole() === 'admin';
+  }
+
+  /**
+   * Check if user is viewer only
+   */
+  isViewer(): boolean {
+    return this.currentRole() === 'viewer';
+  }
+
+  /**
+   * Get role display name with all roles
+   */
+  getRoleDisplayName(role?: UserRole): string {
+    const targetRole = role || this.currentRole();
+    const roleNames = {
+      'admin': 'Administrator',
+      'leader': 'Team Leader',
+      'user': 'Team Member',
+      'viewer': 'Viewer'
+    };
+    return roleNames[targetRole] || 'Unknown';
+  }
+
+  /**
+   * Get role color for UI display
+   */
+  getRoleColor(role?: UserRole): string {
+    const targetRole = role || this.currentRole();
+    const roleColors = {
+      'admin': 'text-purple-600 bg-purple-100 dark:bg-purple-900 dark:text-purple-300',
+      'leader': 'text-green-600 bg-green-100 dark:bg-green-900 dark:text-green-300',
+      'user': 'text-blue-600 bg-blue-100 dark:bg-blue-900 dark:text-blue-300',
+      'viewer': 'text-gray-600 bg-gray-100 dark:bg-gray-900 dark:text-gray-300'
+    };
+    return roleColors[targetRole] || roleColors['viewer'];
+  }
+
+  /**
+   * Get all available roles
+   */
+  getAllRoles(): UserRole[] {
+    return ['admin', 'leader', 'user', 'viewer'];
   }
 }

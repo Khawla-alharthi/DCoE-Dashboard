@@ -4,6 +4,7 @@ import { CardComponent } from '../../shared/components/card/card.component';
 import { ModalComponent } from '../../shared/components/modal/modal.component';
 import { DataTableComponent, TableColumn, TableAction } from '../../shared/components/data-table/data-table.component';
 import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
+import { ThemeToggleComponent } from '../../shared/components/theme-toggle/theme-toggle.component';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration, ChartType } from 'chart.js';
 import { RpaProjectService } from '../../data-access/repositories/rpa-project.repository';
@@ -41,6 +42,7 @@ interface DashboardHighlight {
     ModalComponent,
     DataTableComponent,
     LoadingSpinnerComponent,
+    ThemeToggleComponent,
     BaseChartDirective
   ],
   templateUrl: './dashboard.component.html'

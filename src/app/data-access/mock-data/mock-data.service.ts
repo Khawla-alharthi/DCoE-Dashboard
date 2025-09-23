@@ -196,4 +196,101 @@ export class MockDataService {
     if (index === -1) throw new Error('Program not found');
     this.programs.splice(index, 1);
   }
+
+  // Capability Development Programs
+  private capabilityPrograms: any[] = [
+    {
+      programId: 1,
+      name: 'Staff Digital Muscle',
+      type: 'Staff Digital Muscle',
+      count: 26,
+      status: 'In Progress',
+      description: '• 8 PDO Staff graduated with Digital Muscle Program\n• 3 Trainee Program\n• 15 Data Science',
+      createdAt: new Date('2024-01-01'),
+      updatedAt: new Date('2024-08-15')
+    },
+    {
+      programId: 2,
+      name: 'On-the-Job Training - Lead',
+      type: 'On-the-Job Training',
+      count: 5,
+      status: 'In Progress',
+      description: '• Software Engineer Business Knowledge\n• 3 Trainee Program\n• 2 Data Science Governance',
+      createdAt: new Date('2024-02-01'),
+      updatedAt: new Date('2024-08-20')
+    },
+    {
+      programId: 3,
+      name: 'CI Ideas',
+      type: 'CI Ideas',
+      count: 1,
+      status: 'Completed',
+      description: '• Ideas collected and reviewed\n• 1 Idea implemented',
+      createdAt: new Date('2024-03-01'),
+      updatedAt: new Date('2024-08-25')
+    },
+    {
+      programId: 4,
+      name: 'Training Completed',
+      type: 'Training Completed',
+      count: 3,
+      status: 'Completed',
+      description: '• MIT Applied Data Science\n• PDO Data Science\n• Digital Project Management',
+      createdAt: new Date('2024-04-01'),
+      updatedAt: new Date('2024-08-30')
+    },
+    {
+      programId: 5,
+      name: 'Training In Progress',
+      type: 'Training In Progress',
+      count: 1,
+      status: 'In Progress',
+      description: '• Data scientists learning from Capability\n• Development Team',
+      createdAt: new Date('2024-05-01'),
+      updatedAt: new Date('2024-09-01')
+    },
+    {
+      programId: 6,
+      name: 'Certifications',
+      type: 'Certifications',
+      count: 4,
+      status: 'In Progress',
+      description: '• Planning on General Fundamentals (PG-F)\n• Professional Azure Master (PAM-F)\n• Certified Business Analyst (CBA)\n• Certified Scrum Master (CSM)',
+      createdAt: new Date('2024-06-01'),
+      updatedAt: new Date('2024-09-05')
+    }
+  ];
+
+  getCapabilityPrograms(): any[] {
+    return [...this.capabilityPrograms];
+  }
+
+  createCapabilityProgram(program: any): any {
+    const newProgram = {
+      ...program,
+      programId: Math.max(...this.capabilityPrograms.map(p => p.programId)) + 1,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    this.capabilityPrograms.push(newProgram);
+    return newProgram;
+  }
+
+  updateCapabilityProgram(id: number, updates: any): any {
+    const index = this.capabilityPrograms.findIndex(p => p.programId === id);
+    if (index === -1) throw new Error('Capability program not found');
+    
+    this.capabilityPrograms[index] = {
+      ...this.capabilityPrograms[index],
+      ...updates,
+      updatedAt: new Date()
+    };
+    return this.capabilityPrograms[index];
+  }
+
+  deleteCapabilityProgram(id: number): void {
+    const index = this.capabilityPrograms.findIndex(p => p.programId === id);
+    if (index === -1) throw new Error('Capability program not found');
+    this.capabilityPrograms.splice(index, 1);
+  }
 }

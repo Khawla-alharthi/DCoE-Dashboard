@@ -38,6 +38,13 @@ export const routes: Routes = [
       },
       
       {
+        path: 'capability-development',
+        loadComponent: () => import('./features/capability-development/capability-development.component')
+          .then(c => c.CapabilityDevelopmentComponent),
+        title: 'Capability Development - DCoE'
+      },
+      
+      {
         path: 'rpa-projects',
         loadChildren: () => import('./features/rpa-projects/rpa-projects.routes')
           .then(r => r.rpaProjectsRoutes)
@@ -46,13 +53,17 @@ export const routes: Routes = [
       {
         path: 'programs',
         loadChildren: () => import('./features/programs/programs.routes')
-          .then(r => r.programsRoutes)
+          .then(r => r.programsRoutes),
+        canActivate: [RoleGuard],
+        data: { requiredPermission: 'canManagePrograms' }
       },
       
       {
         path: 'teams',
         loadChildren: () => import('./features/teams/teams.routes')
-          .then(r => r.teamsRoutes)
+          .then(r => r.teamsRoutes),
+        canActivate: [RoleGuard],
+        data: { requiredPermission: 'canManageTeams' }
       },
       
       {
@@ -60,13 +71,15 @@ export const routes: Routes = [
         loadChildren: () => import('./features/users/users.routes')
           .then(r => r.usersRoutes),
         canActivate: [RoleGuard],
-        data: { requiresLeader: true }
+        data: { requiredPermission: 'canManageUsers' }
       },
       
       {
         path: 'recognition',
         loadChildren: () => import('./features/recognition-awards/recognition-awards.routes')
-          .then(r => r.recognitionRoutes)
+          .then(r => r.recognitionRoutes),
+        canActivate: [RoleGuard],
+        data: { requiredPermission: 'canManageRecognition' }
       }
     ]
   },

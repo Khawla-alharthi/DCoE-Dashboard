@@ -1,7 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
+import { LoadingSpinnerComponent } from '../../shared/components/ui/loading-spinner.component';
 import { CapabilityDevelopmentService } from '../../data-access/repositories/capability-development.repository';
 import { RoleService } from '../../core/services/role.service';
 import { NotificationService } from '../../core/services/notification.service';

@@ -4,9 +4,9 @@ import { ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angula
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { DataTableComponent, TableColumn, TableAction } from '../../shared/components/data-table/data-table.component';
-import { ModalComponent } from '../../shared/components/modal/modal.component';
+import { ModalComponent } from '../../shared/components/layout/modal.component';
 import { CardComponent } from '../../shared/components/card/card.component';
-import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
+import { LoadingSpinnerComponent } from '../../shared/components/ui/loading-spinner.component';
 import { HighlightsService, HighlightStatistics } from '../../data-access/repositories/ide-highlights.repository';
 import { UserService } from '../../data-access/repositories/user.repository';
 import { AuthService } from '../../core/services/auth.service';

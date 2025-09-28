@@ -2,7 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 
-import { ModalComponent } from '../../shared/components/modal/modal.component';
+import { ModalComponent } from '../../shared/components/layout/modal.component';
 import { CardComponent } from '../../shared/components/card/card.component';
 import { AuthService } from '../../core/services/auth.service';
 import { NotificationService } from '../../core/services/notification.service';

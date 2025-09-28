@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { DataTableComponent, TableColumn, TableAction } from '../../shared/components/data-table/data-table.component';
-import { ModalComponent } from '../../shared/components/modal/modal.component';
+import { ModalComponent } from '../../shared/components/layout/modal.component';
 import { CardComponent } from '../../shared/components/card/card.component';
 import { UserService, UserStatistics } from '../../data-access/repositories/user.repository';
 import { AuthService } from '../../core/services/auth.service';

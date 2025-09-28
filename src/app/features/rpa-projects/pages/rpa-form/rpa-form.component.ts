@@ -2,7 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
 import { DataTableComponent, TableColumn, TableAction } from '../../../../shared/components/data-table/data-table.component';
-import { ModalComponent } from '../../../../shared/components/modal/modal.component';
+import { ModalComponent } from '../../../../shared/components/layout/modal.component';
 import { RpaProjectService } from '../../../../data-access/repositories/rpa-project.repository';
 import { AuthService } from '../../../../core/services/auth.service';
 import { RoleService } from '../../../../core/services/role.service';

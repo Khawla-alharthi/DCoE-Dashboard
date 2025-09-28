@@ -1,7 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DataTableComponent, TableColumn, TableAction } from '../../shared/components/data-table/data-table.component';
-import { ModalComponent } from '../../shared/components/modal/modal.component';
+import { ModalComponent } from '../../shared/components/layout/modal.component';
 import { CardComponent } from '../../shared/components/card/card.component';
 import { ProgramRepository, Program as RepoProgram } from '../../data-access/repositories/program.repository';
 import { AuthService } from '../../core/services/auth.service';

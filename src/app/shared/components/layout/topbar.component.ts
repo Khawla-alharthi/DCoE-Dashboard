@@ -2,8 +2,8 @@ import { Component, inject, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../core/services/auth.service';
 import { LayoutService } from '../../../core/services/layout.service';
-import { ThemeToggleComponent } from '../theme-toggle/theme-toggle.component';
-import { RoleToggleComponent } from '../role-toggle/role-toggle.component';
+import { ThemeToggleComponent } from '../ui/theme-toggle.component';
+import { RoleToggleComponent } from '../ui/role-toggle.component';
 
 @Component({
   selector: 'app-topbar',

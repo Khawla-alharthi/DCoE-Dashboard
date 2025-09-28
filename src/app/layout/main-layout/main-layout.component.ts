@@ -2,8 +2,8 @@ import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
-import { TopbarComponent } from '../../shared/components/topbar/topbar.component';
-import { SidebarComponent } from '../../shared/components/sidebar/sidebar.component';
+import { TopbarComponent } from '../../shared/components/layout/topbar.component';
+import { SidebarComponent } from '../../shared/components/layout/sidebar.component';
 import { LayoutService } from '../../core/services/layout.service';
 
 @Component({

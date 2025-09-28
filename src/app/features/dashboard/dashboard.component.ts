@@ -1,5 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { CardComponent } from '../../shared/components/card/card.component';
 import { ModalComponent } from '../../shared/components/modal/modal.component';
 import { DataTableComponent, TableColumn, TableAction } from '../../shared/components/data-table/data-table.component';
@@ -8,30 +9,9 @@ import { ThemeToggleComponent } from '../../shared/components/theme-toggle/theme
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration, ChartType } from 'chart.js';
 import { RpaProjectService } from '../../data-access/repositories/rpa-project.repository';
-import { ProgramRepository } from '../../data-access/repositories/program.repository';
 import { HighlightsService } from '../../data-access/repositories/ide-highlights.repository';
 import { AuthService } from '../../core/services/auth.service';
 import { NotificationService } from '../../core/services/notification.service';
-import { IdeHighlight } from '../../data-access/models/ide-highlight.model';
-
-interface DashboardStats {
-  totalProjects: number;
-  valueGenerated: number;
-  actualPercentage: number;
-  externalEngagements: number;
-  liveProcesses: number;
-  inDevelopment: number;
-  planned: number;
-  manhourSavings: number;
-  robots: number;
-}
-
-interface DashboardHighlight {
-  title: string;
-  description: string;
-  type: string;
-  date: Date;
-}
 
 @Component({
   selector: 'app-dashboard',
@@ -47,19 +27,18 @@ interface DashboardHighlight {
   ],
   templateUrl: './dashboard.component.html'
 })
+
 export class DashboardComponent implements OnInit {
   private rpaProjectService = inject(RpaProjectService);
-  private programService = inject(ProgramRepository);
   private highlightsService = inject(HighlightsService);
   public authService = inject(AuthService);
   private notificationService = inject(NotificationService);
 
   // Loading states
   loading = true;
-  statsLoading = false;
 
-  // Stats data
-  stats: DashboardStats = {
+  // Stats data matching the images
+  stats = {
     totalProjects: 37,
     valueGenerated: 7970000,
     actualPercentage: 81,
@@ -71,6 +50,58 @@ export class DashboardComponent implements OnInit {
     robots: 4
   };
 
+  // Digital Ambition Program data from the images
+  digitalPrograms = [
+    {
+      name: 'WAFI',
+      phase: 'Industrialization',
+      comments: 'Initial requirements gathering completed. Phase 4 kickoff planned for July.',
+      status: 'On Track'
+    },
+    {
+      name: 'GCPO',
+      phase: 'POC',
+      comments: 'Project delivered. Field Testing and Support in progress.',
+      status: 'Delayed by 20%'
+    },
+    {
+      name: 'RPA',
+      phase: 'Scale',
+      comments: 'Successfully launched 108 processes, and actively working on developing additional...',
+      status: 'On Track'
+    },
+    {
+      name: 'ADAM',
+      phase: 'MDP',
+      comments: 'We have successfully rolled out two use cases, with end-user testing currently in pr...',
+      status: 'On Track'
+    },
+    {
+      name: 'STEP',
+      phase: 'Industrialized',
+      comments: '361 well has been deployed',
+      status: 'On Track'
+    },
+    {
+      name: 'Maintenance Domain',
+      phase: 'POC',
+      comments: 'We have successfully rolled out two use cases, with end-user testing currently in pr...',
+      status: 'Delayed by 20%'
+    },
+    {
+      name: 'AI Task Force',
+      phase: 'Kick-Off',
+      comments: 'To be Kicked-Off',
+      status: 'On Track'
+    },
+    {
+      name: 'Digital Muscle',
+      phase: 'Scale',
+      comments: '96 PDO Staff graduated with Digital Muscle Program',
+      status: 'Delayed by 20%'
+    }
+  ];
+
   // Modal states
   statsModalOpen = false;
   activityModalOpen = false;
@@ -78,10 +109,10 @@ export class DashboardComponent implements OnInit {
   selectedStatsType = '';
   statsModalTitle = '';
   selectedActivity: any = null;
-  selectedHighlight: DashboardHighlight | null = null;
+  selectedHighlight: any = null;
 
-  // IDE Highlights - loaded from service
-  ideHighlights: DashboardHighlight[] = [];
+  // IDE Highlights
+  ideHighlights: any[] = [];
 
   // Recent activities
   recentActivities = [
@@ -158,7 +189,18 @@ export class DashboardComponent implements OnInit {
         position: 'right',
         labels: {
           usePointStyle: true,
-          padding: 20
+          padding: 15,
+          font: {
+            size: 11
+          }
+        }
+      },
+      tooltip: {
+        callbacks: {
+          label: (context) => {
+            const value = context.parsed || 0;
+            return `${context.label}: ${(value / 1000000).toFixed(1)}M`;
+          }
         }
       }
     }
@@ -216,15 +258,8 @@ export class DashboardComponent implements OnInit {
 
   private loadDashboardData(): void {
     this.loading = true;
-    
-    // Load highlights from service
     this.loadHighlights();
     
-    // In a real application, you would load data from services
-    // this.rpaProjectService.getAll().subscribe(...)
-    // this.programService.getAll().subscribe(...)
-    
-    // For now, we use the mock data already set up
     setTimeout(() => {
       this.loading = false;
     }, 500);
@@ -241,7 +276,7 @@ export class DashboardComponent implements OnInit {
         }));
       },
       error: (error) => {
-        // Fallback to static data if service fails
+        // Fallback to static data
         this.ideHighlights = [
           {
             title: 'Knowledge-sharing session with OQ Sohar',
@@ -272,6 +307,15 @@ export class DashboardComponent implements OnInit {
     });
   }
 
+  getProgramStatusClass(status: string): string {
+    const statusClasses = {
+      'On Track': 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
+      'Delayed by 20%': 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
+      'At Risk': 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
+    };
+    return statusClasses[status as keyof typeof statusClasses] || 'bg-gray-100 text-gray-800';
+  }
+
   openStatsModal(type: string): void {
     this.selectedStatsType = type;
     this.statsModalOpen = true;
@@ -295,27 +339,13 @@ export class DashboardComponent implements OnInit {
     this.notificationService.showInfo('Add Activity', 'Team activity management feature will be available soon');
   }
 
-  openHighlightModal(highlight: DashboardHighlight): void {
+  openHighlightModal(highlight: any): void {
     this.selectedHighlight = highlight;
     this.highlightModalOpen = true;
   }
 
-  getActivityStatusClass(status: string): string {
-    const statusClasses = {
-      'Planning': 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300',
-      'In Progress': 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
-      'Done': 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300'
-    };
-    return statusClasses[status as keyof typeof statusClasses] || 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300';
-  }
-
-  // Utility methods for better data presentation
   formatCurrency(value: number): string {
     return (value / 1000000).toFixed(1) + 'M';
-  }
-
-  formatNumber(value: number): string {
-    return value.toLocaleString();
   }
 
   refreshDashboard(): void {

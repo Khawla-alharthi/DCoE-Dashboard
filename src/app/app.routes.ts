@@ -1,3 +1,4 @@
+// src/app/app.routes.ts
 import { Routes } from '@angular/router';
 import { AuthGuard } from './core/guards/auth.guard';
 import { RoleGuard } from './core/guards/role.guard';
@@ -38,10 +39,11 @@ export const routes: Routes = [
       },
       
       {
-        path: 'capability-development',
-        loadComponent: () => import('./features/capability-development/capability-development.component')
-          .then(c => c.CapabilityDevelopmentComponent),
-        title: 'Capability Development - DCoE'
+        path: 'programs',
+        loadChildren: () => import('./features/programs/programs.routes')
+          .then(r => r.programsRoutes),
+        canActivate: [RoleGuard],
+        data: { requiredPermission: 'canManagePrograms' }
       },
       
       {
@@ -51,11 +53,32 @@ export const routes: Routes = [
       },
       
       {
-        path: 'programs',
-        loadChildren: () => import('./features/programs/programs.routes')
-          .then(r => r.programsRoutes),
+        path: 'ide-highlights',
+        loadComponent: () => import('./features/ide-heighlight/ide-list.component')
+          .then(c => c.HighlightsListComponent),
+        title: 'IDE Highlights - DCoE'
+      },
+      
+      {
+        path: 'capability-development',
+        loadComponent: () => import('./features/capability-development/capability-development.component')
+          .then(c => c.CapabilityDevelopmentComponent),
+        title: 'Capability Development - DCoE'
+      },
+      
+      {
+        path: 'recognition',
+        loadChildren: () => import('./features/recognition-awards/recognition-awards.routes')
+          .then(r => r.recognitionRoutes),
         canActivate: [RoleGuard],
-        data: { requiredPermission: 'canManagePrograms' }
+        data: { requiredPermission: 'canManageRecognition' }
+      },
+      
+      {
+        path: 'team-activities',
+        loadComponent: () => import('./features/team-activities/team-activities.component')
+          .then(c => c.TeamActivitiesComponent),
+        title: 'Team Activities - DCoE'
       },
       
       {
@@ -72,14 +95,6 @@ export const routes: Routes = [
           .then(r => r.usersRoutes),
         canActivate: [RoleGuard],
         data: { requiredPermission: 'canManageUsers' }
-      },
-      
-      {
-        path: 'recognition',
-        loadChildren: () => import('./features/recognition-awards/recognition-awards.routes')
-          .then(r => r.recognitionRoutes),
-        canActivate: [RoleGuard],
-        data: { requiredPermission: 'canManageRecognition' }
       }
     ]
   },

@@ -10,7 +10,6 @@ export interface NavItem {
   icon: string;
   route: string;
   requiredPermission?: string;
-  children?: NavItem[];
 }
 
 @Component({
@@ -20,37 +19,139 @@ export interface NavItem {
   template: `
     <aside 
       *ngIf="layoutService.sidebarOpen$ | async"
-      class="w-64 bg-white dark:bg-gray-800 h-full shadow-lg border-r border-gray-200 dark:border-gray-700 overflow-y-auto"
+      class="sidebar"
+      [class.sidebar-mobile]="isMobile()"
     >
-      <nav class="p-4">
-        <ul class="space-y-2">
-          <li *ngFor="let item of getVisibleNavItems()" class="relative">
+      <nav class="sidebar-nav">
+        <ul class="nav-list">
+          <li *ngFor="let item of getVisibleNavItems()" class="nav-item">
             <a 
               [routerLink]="item.route"
-              routerLinkActive="bg-primary-50 dark:bg-primary-900 text-primary-600 dark:text-primary-400 border-r-2 border-primary-500"
-              class="flex items-center px-4 py-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-gray-700 dark:text-gray-300"
+              routerLinkActive="active"
+              [routerLinkActiveOptions]="{exact: false}"
+              class="nav-link"
+              (click)="onNavClick()"
             >
-              <span [innerHTML]="item.icon" class="w-5 h-5 mr-3"></span>
-              {{ item.label }}
+              <span [innerHTML]="item.icon" class="nav-icon"></span>
+              <span class="nav-label">{{ item.label }}</span>
             </a>
-            
-            <!-- Sub-navigation (if needed) -->
-            <ul *ngIf="item.children" class="ml-8 mt-2 space-y-1">
-              <li *ngFor="let child of item.children">
-                <a 
-                  [routerLink]="child.route"
-                  routerLinkActive="text-primary-600 dark:text-primary-400"
-                  class="block px-4 py-2 text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
-                >
-                  {{ child.label }}
-                </a>
-              </li>
-            </ul>
           </li>
         </ul>
       </nav>
     </aside>
-  `
+  `,
+  styles: [`
+    .sidebar {
+      width: 260px;
+      background: #ffffff;
+      height: 100%;
+      border-right: 1px solid #e5e5ea;
+      overflow-y: auto;
+      transition: transform 0.3s ease;
+      
+      @media (max-width: 1023px) {
+        position: fixed;
+        left: 0;
+        top: 65px;
+        bottom: 0;
+        z-index: 40;
+        box-shadow: 4px 0 12px rgba(0, 0, 0, 0.1);
+      }
+    }
+    
+    .dark .sidebar {
+      background: #2a2a2c;
+      border-right-color: #3a3a3c;
+    }
+    
+    .sidebar-nav {
+      padding: 1rem;
+    }
+    
+    .nav-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+    
+    .nav-item {
+      margin: 0;
+    }
+    
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      border-radius: 10px;
+      color: #1d1d1f;
+      text-decoration: none;
+      font-size: 0.9375rem;
+      font-weight: 500;
+      transition: all 0.2s;
+      
+      &:hover {
+        background: #f5f5f7;
+      }
+      
+      &.active {
+        background: #007aff;
+        color: #ffffff;
+        
+        :deep(.nav-icon svg) {
+          color: #ffffff;
+        }
+      }
+    }
+    
+    .dark .nav-link {
+      color: #f5f5f7;
+      
+      &:hover {
+        background: #3a3a3c;
+      }
+      
+      &.active {
+        background: #0a84ff;
+        color: #ffffff;
+      }
+    }
+    
+    .nav-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px;
+      height: 22px;
+      flex-shrink: 0;
+      
+      :deep(svg) {
+        width: 100%;
+        height: 100%;
+        color: #86868b;
+        transition: color 0.2s;
+      }
+    }
+    
+    .dark .nav-icon :deep(svg) {
+      color: #98989d;
+    }
+    
+    .nav-link:hover .nav-icon :deep(svg) {
+      color: #1d1d1f;
+    }
+    
+    .dark .nav-link:hover .nav-icon :deep(svg) {
+      color: #f5f5f7;
+    }
+    
+    .nav-label {
+      flex: 1;
+    }
+  `]
 })
 export class SidebarComponent {
   authService = inject(AuthService);
@@ -61,8 +162,7 @@ export class SidebarComponent {
     {
       label: 'Dashboard',
       icon: `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"/>
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5a2 2 0 012-2h4a2 2 0 012 2v6H8V5z"/>
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
       </svg>`,
       route: '/dashboard'
     },
@@ -76,7 +176,7 @@ export class SidebarComponent {
     {
       label: 'RPA Projects',
       icon: `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/>
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/>
       </svg>`,
       route: '/rpa-projects'
     },
@@ -105,9 +205,9 @@ export class SidebarComponent {
       requiredPermission: 'canManageUsers'
     },
     {
-      label: 'Recognition & Awards',
+      label: 'Recognition',
       icon: `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/>
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
       </svg>`,
       route: '/recognition',
       requiredPermission: 'canManageRecognition'
@@ -116,12 +216,20 @@ export class SidebarComponent {
 
   getVisibleNavItems(): NavItem[] {
     return this.navItems.filter(item => {
-      // If no permission required, show to everyone
       if (!item.requiredPermission) {
         return true;
       }
-      // Check if user has the required permission
       return this.roleService.hasPermission(item.requiredPermission as any);
     });
+  }
+
+  isMobile(): boolean {
+    return window.innerWidth < 1024;
+  }
+
+  onNavClick(): void {
+    if (this.isMobile()) {
+      this.layoutService.setSidebarOpen(false);
+    }
   }
 }

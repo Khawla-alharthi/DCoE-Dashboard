@@ -3,90 +3,80 @@ import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../core/services/auth.service';
 import { LayoutService } from '../../../core/services/layout.service';
 import { ThemeToggleComponent } from '../ui/theme-toggle.component';
-import { RoleToggleComponent } from '../ui/role-toggle.component';
 
 @Component({
   selector: 'app-topbar',
   standalone: true,
-  imports: [CommonModule, ThemeToggleComponent, RoleToggleComponent],
+  imports: [CommonModule, ThemeToggleComponent],
   template: `
-    <header class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 px-6 py-4">
-      <div class="flex items-center justify-between">
+    <header class="topbar">
+      <div class="topbar-content">
         <!-- Left Section -->
-        <div class="flex items-center space-x-4">
+        <div class="topbar-left">
           <button 
             (click)="layoutService.toggleSidebar()"
-            class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors lg:hidden"
+            class="menu-btn"
+            aria-label="Toggle menu"
           >
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
             </svg>
           </button>
           
-          <!-- PDO Logo and Title -->
-          <div class="flex items-center space-x-3">
-            <!-- PDO Logo -->
-            <div class="flex items-center justify-center w-10 h-10 bg-green-600 rounded-lg">
-              <span class="text-white font-bold text-lg">PDO</span>
+          <!-- Logo and Title -->
+          <div class="brand">
+            <div class="logo">
+              <span class="logo-text">PDO</span>
             </div>
-            <div>
-              <h1 class="text-xl font-semibold text-gray-900 dark:text-white">Digital Centre of Excellence</h1>
-              <p class="text-sm text-gray-500 dark:text-gray-400">DCoE Dashboard - August 2025</p>
+            <div class="brand-text">
+              <h1 class="brand-title">Digital Centre of Excellence</h1>
+              <p class="brand-subtitle">DCoE Dashboard - August 2025</p>
             </div>
           </div>
         </div>
 
         <!-- Right Section -->
-        <div class="flex items-center space-x-6">
-          <!-- Role Toggle (for demo) -->
-          <app-role-toggle></app-role-toggle>
-          
+        <div class="topbar-right">
           <!-- Theme Toggle -->
-          <app-theme-toggle></app-theme-toggle>
+          <app-theme-toggle />
 
           <!-- User Profile -->
-          <div class="flex items-center space-x-3">
-            <div class="text-right hidden sm:block">
-              <p class="text-sm font-medium text-gray-900 dark:text-white">
-                {{ (authService.currentUser$ | async)?.displayName || 'Demo User' }}
-              </p>
-              <p class="text-xs text-gray-500 dark:text-gray-400">
-                {{ (authService.currentUser$ | async)?.isLeader ? 'Team Leader' : 'Team Member' }}
-              </p>
+          <div class="user-section">
+            <div class="user-info">
+              <p class="user-name">{{ (authService.currentUser$ | async)?.displayName || 'Demo User' }}</p>
+              <p class="user-role">{{ (authService.currentUser$ | async)?.isLeader ? 'Team Leader' : 'Team Member' }}</p>
             </div>
             
-            <div class="relative">
+            <div class="user-menu-wrapper">
               <button 
                 (click)="toggleUserMenu()"
-                class="flex items-center p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                title="User menu"
+                class="user-btn"
+                aria-label="User menu"
               >
-                <div class="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center text-white font-medium">
-                  {{ getUserInitials() }}
-                </div>
-                <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="avatar">{{ getUserInitials() }}</div>
+                <svg class="chevron" [class.rotate]="showUserMenu" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                 </svg>
               </button>
 
               <!-- Dropdown Menu -->
-              <div 
-                *ngIf="showUserMenu"
-                class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-1 z-50"
-              >
-                <button 
-                  class="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
-                >
-                  <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div *ngIf="showUserMenu" class="user-dropdown">
+                <button class="dropdown-item">
+                  <svg class="item-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                   </svg>
                   Profile
                 </button>
-                <button 
-                  (click)="logout()"
-                  class="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
-                >
-                  <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <button class="dropdown-item">
+                  <svg class="item-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                  </svg>
+                  Settings
+                </button>
+                <div class="dropdown-divider"></div>
+                <button (click)="logout()" class="dropdown-item danger">
+                  <svg class="item-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
                   </svg>
                   Logout
@@ -97,7 +87,320 @@ import { RoleToggleComponent } from '../ui/role-toggle.component';
         </div>
       </div>
     </header>
-  `
+  `,
+  styles: [`
+    .topbar {
+      background: #ffffff;
+      border-bottom: 1px solid #e5e5ea;
+      height: 65px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      
+      .dark & {
+        background: #2a2a2c;
+        border-bottom-color: #3a3a3c;
+      }
+    }
+    
+    .topbar-content {
+      height: 100%;
+      padding: 0 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 100%;
+      margin: 0 auto;
+    }
+    
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    
+    .menu-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: transparent;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.2s;
+      
+      &:hover {
+        background: #f5f5f7;
+      }
+      
+      .dark & {
+        &:hover {
+          background: #3a3a3c;
+        }
+      }
+      
+      .icon {
+        width: 22px;
+        height: 22px;
+        color: #1d1d1f;
+        
+        .dark & {
+          color: #f5f5f7;
+        }
+      }
+    }
+    
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      
+      @media (max-width: 640px) {
+        .brand-text {
+          display: none;
+        }
+      }
+    }
+    
+    .logo {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, #34c759 0%, #30d158 100%);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    
+    .logo-text {
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 1rem;
+      letter-spacing: -0.5px;
+    }
+    
+    .brand-text {
+      .brand-title {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #1d1d1f;
+        margin: 0;
+        line-height: 1.2;
+        
+        .dark & {
+          color: #f5f5f7;
+        }
+      }
+      
+      .brand-subtitle {
+        font-size: 0.75rem;
+        color: #86868b;
+        margin: 0;
+        line-height: 1.2;
+        
+        .dark & {
+          color: #98989d;
+        }
+      }
+    }
+    
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    
+    .user-section {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    
+    .user-info {
+      text-align: right;
+      
+      @media (max-width: 640px) {
+        display: none;
+      }
+      
+      .user-name {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: #1d1d1f;
+        margin: 0;
+        line-height: 1.2;
+        
+        .dark & {
+          color: #f5f5f7;
+        }
+      }
+      
+      .user-role {
+        font-size: 0.75rem;
+        color: #86868b;
+        margin: 0;
+        line-height: 1.2;
+        
+        .dark & {
+          color: #98989d;
+        }
+      }
+    }
+    
+    .user-menu-wrapper {
+      position: relative;
+    }
+    
+    .user-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 0.25rem;
+      border-radius: 10px;
+      transition: background 0.2s;
+      
+      &:hover {
+        background: #f5f5f7;
+      }
+      
+      .dark & {
+        &:hover {
+          background: #3a3a3c;
+        }
+      }
+    }
+    
+    .avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #007aff 0%, #5856d6 100%);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 0.875rem;
+    }
+    
+    .chevron {
+      width: 16px;
+      height: 16px;
+      color: #86868b;
+      transition: transform 0.2s;
+      
+      .dark & {
+        color: #98989d;
+      }
+      
+      &.rotate {
+        transform: rotate(180deg);
+      }
+    }
+    
+    .user-dropdown {
+      position: absolute;
+      right: 0;
+      top: calc(100% + 0.5rem);
+      background: #ffffff;
+      border: 1px solid #e5e5ea;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+      min-width: 200px;
+      padding: 0.5rem;
+      z-index: 100;
+      animation: fadeIn 0.2s ease;
+      
+      .dark & {
+        background: #2a2a2c;
+        border-color: #3a3a3c;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+      }
+    }
+    
+    .dropdown-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      width: 100%;
+      padding: 0.75rem;
+      border: none;
+      background: transparent;
+      border-radius: 8px;
+      color: #1d1d1f;
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s;
+      text-align: left;
+      
+      &:hover {
+        background: #f5f5f7;
+      }
+      
+      &.danger {
+        color: #ff3b30;
+        
+        .item-icon {
+          color: #ff3b30;
+        }
+      }
+      
+      .dark & {
+        color: #f5f5f7;
+        
+        &:hover {
+          background: #3a3a3c;
+        }
+        
+        &.danger {
+          color: #ff453a;
+          
+          .item-icon {
+            color: #ff453a;
+          }
+        }
+      }
+    }
+    
+    .item-icon {
+      width: 18px;
+      height: 18px;
+      color: #86868b;
+      flex-shrink: 0;
+      
+      .dark & {
+        color: #98989d;
+      }
+    }
+    
+    .dropdown-divider {
+      height: 1px;
+      background: #e5e5ea;
+      margin: 0.5rem 0;
+      
+      .dark & {
+        background: #3a3a3c;
+      }
+    }
+    
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  `]
 })
 export class TopbarComponent {
   authService = inject(AuthService);
@@ -126,7 +429,7 @@ export class TopbarComponent {
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: Event): void {
     const target = event.target as HTMLElement;
-    if (!target.closest('.relative')) {
+    if (!target.closest('.user-menu-wrapper')) {
       this.showUserMenu = false;
     }
   }

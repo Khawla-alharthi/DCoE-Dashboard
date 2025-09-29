@@ -7,9 +7,6 @@ import { ThemeToggleComponent } from '../../shared/components/ui/theme-toggle.co
 import { DashboardService, DashboardStats } from '../../data-access/services/api/dashboard-api.service';
 import { AuthService } from '../../core/services/auth.service';
 import { NotificationService } from '../../core/services/notification.service';
-import { Program } from '../../data-access/models/program.model';
-import { TeamActivity } from '../../data-access/models/team-activity.model';
-import { IdeHighlight } from '../../data-access/models/ide-highlight.model';
 
 @Component({
   selector: 'app-dashboard',
@@ -99,113 +96,81 @@ import { IdeHighlight } from '../../data-access/models/ide-highlight.model';
           </div>
         </div>
 
-        <!-- Digital Ambition Program -->
-        <div class="section-card">
-          <div class="section-header">
-            <h2 class="section-title">Digital Ambition Program</h2>
-            <p class="section-subtitle">Program Status Overview</p>
-          </div>
-          
-          <div class="table-wrapper">
-            <table class="data-table">
-              <thead>
-                <tr>
-                  <th>Program Name</th>
-                  <th>Phase</th>
-                  <th>Comments</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let program of digitalPrograms" (click)="viewProgram(program)">
-                  <td><strong>{{ program.programName }}</strong></td>
-                  <td>{{ program.phase }}</td>
-                  <td class="comments-cell">{{ program.comments }}</td>
-                  <td>
-                    <span class="status-badge" [ngClass]="getStatusClass(program.status)">
-                      {{ program.status }}
-                    </span>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- Recognition & Awards -->
-        <div class="section-card">
-          <div class="section-header">
-            <h2 class="section-title">Recognition & Awards</h2>
-            <a routerLink="/recognition" class="view-link">View All →</a>
-          </div>
-          
-          <div class="recognition-content">
-            <div class="recognition-card">
-              <div class="avatar">IA</div>
-              <div class="recognition-info">
-                <h3>Istabraq Al Ruhaili</h3>
-                <p class="team-badge">🏆 Team</p>
-                <p class="category">AI Guidance - OQ Engagements</p>
+        <!-- Quick Links -->
+        <div class="quick-links-section">
+          <h2 class="section-title">Quick Access</h2>
+          <div class="quick-links-grid">
+            <a routerLink="/programs" class="quick-link-card">
+              <div class="quick-link-icon blue">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                </svg>
               </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Team Building Activities -->
-        <div class="section-card">
-          <div class="section-header">
-            <h2 class="section-title">Team Building Activities</h2>
-            <button *ngIf="authService.isLeader()" (click)="openAddActivityModal()" class="add-btn">
-              Add Activity
-            </button>
-          </div>
-          
-          <div class="table-wrapper">
-            <table class="data-table">
-              <thead>
-                <tr>
-                  <th>Team Name</th>
-                  <th>Date</th>
-                  <th>Activity Name</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let activity of teamActivities" (click)="openActivityModal(activity)">
-                  <td>{{ activity.team?.teamName }}</td>
-                  <td>{{ activity.activityDate | date:'MMM d, yyyy' }}</td>
-                  <td>{{ activity.activityName }}</td>
-                  <td>
-                    <span class="status-badge" [ngClass]="getStatusClass(activity.status)">
-                      {{ activity.status }}
-                    </span>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- IDE Highlights -->
-        <div class="section-card">
-          <div class="section-header">
-            <h2 class="section-title">IDE Highlights</h2>
-            <a routerLink="/highlights" class="view-link">View All →</a>
-          </div>
-          
-          <div class="highlights-grid">
-            <div *ngFor="let highlight of ideHighlights" 
-                 class="highlight-card"
-                 (click)="openHighlightModal(highlight)">
-              <div class="highlight-indicator"></div>
-              <div class="highlight-content">
-                <h3>{{ highlight.highlightTitle }}</h3>
-                <p>{{ highlight.description }}</p>
+              <div class="quick-link-content">
+                <h3>Digital Ambition Programs</h3>
+                <p>View program status and progress</p>
               </div>
-              <svg class="chevron-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-              </svg>
-            </div>
+            </a>
+
+            <a routerLink="/rpa-projects" class="quick-link-card">
+              <div class="quick-link-icon green">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                </svg>
+              </div>
+              <div class="quick-link-content">
+                <h3>RPA Summary</h3>
+                <p>Review automation projects and metrics</p>
+              </div>
+            </a>
+
+            <a routerLink="/ide-highlights" class="quick-link-card">
+              <div class="quick-link-icon purple">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                </svg>
+              </div>
+              <div class="quick-link-content">
+                <h3>IDE Highlights</h3>
+                <p>View team achievements and contributions</p>
+              </div>
+            </a>
+
+            <a routerLink="/capability-development" class="quick-link-card">
+              <div class="quick-link-icon yellow">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                </svg>
+              </div>
+              <div class="quick-link-content">
+                <h3>Capability Development</h3>
+                <p>Track training and development programs</p>
+              </div>
+            </a>
+
+            <a routerLink="/recognition" class="quick-link-card">
+              <div class="quick-link-icon red">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
+                </svg>
+              </div>
+              <div class="quick-link-content">
+                <h3>Recognition & Awards</h3>
+                <p>Acknowledge outstanding contributions</p>
+              </div>
+            </a>
+
+            <a routerLink="/team-activities" class="quick-link-card">
+              <div class="quick-link-icon teal">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
+              </div>
+              <div class="quick-link-content">
+                <h3>Team Building Activities</h3>
+                <p>View upcoming team events and activities</p>
+              </div>
+            </a>
           </div>
         </div>
       </div>
@@ -231,10 +196,6 @@ export class DashboardComponent implements OnInit {
     robots: 4
   };
 
-  digitalPrograms: Program[] = [];
-  teamActivities: TeamActivity[] = [];
-  ideHighlights: IdeHighlight[] = [];
-
   ngOnInit(): void {
     this.loadDashboardData();
   }
@@ -242,81 +203,20 @@ export class DashboardComponent implements OnInit {
   private loadDashboardData(): void {
     this.loading = true;
     
-    Promise.all([
-      this.loadDigitalPrograms(),
-      this.loadTeamActivities(),
-      this.loadIdeHighlights(),
-      this.loadStats()
-    ]).then(() => {
-      this.loading = false;
-    }).catch(error => {
-      console.error('Error loading dashboard data:', error);
-      this.loading = false;
-    });
-  }
-
-  private async loadDigitalPrograms(): Promise<void> {
-    this.dashboardService.getDigitalPrograms().subscribe({
-      next: (programs) => {
-        this.digitalPrograms = programs;
-      },
-      error: (error) => {
-        console.error('Error loading digital programs:', error);
-      }
-    });
-  }
-
-  private async loadTeamActivities(): Promise<void> {
-    this.dashboardService.getTeamActivities().subscribe({
-      next: (activities) => {
-        this.teamActivities = activities;
-      },
-      error: (error) => {
-        console.error('Error loading team activities:', error);
-      }
-    });
-  }
-
-  private async loadIdeHighlights(): Promise<void> {
-    this.dashboardService.getIdeHighlights().subscribe({
-      next: (highlights) => {
-        this.ideHighlights = highlights;
-      },
-      error: (error) => {
-        console.error('Error loading IDE highlights:', error);
-      }
-    });
-  }
-
-  private async loadStats(): Promise<void> {
     this.dashboardService.getDashboardStats().subscribe({
       next: (stats) => {
         this.stats = stats;
+        this.loading = false;
       },
       error: (error) => {
         console.error('Error loading dashboard stats:', error);
+        this.loading = false;
       }
     });
   }
 
   openMetricDetails(type: string): void {
     this.notificationService.showInfo('Metric Details', `Opening details for ${type} metrics`);
-  }
-
-  viewProgram(program: Program): void {
-    this.notificationService.showInfo('Program Details', `Viewing details for ${program.programName}`);
-  }
-
-  openActivityModal(activity: TeamActivity): void {
-    this.notificationService.showInfo('Activity Details', `Viewing details for ${activity.activityName}`);
-  }
-
-  openAddActivityModal(): void {
-    this.notificationService.showInfo('Add Activity', 'Opening add activity form');
-  }
-
-  openHighlightModal(highlight: IdeHighlight): void {
-    this.notificationService.showInfo('Highlight Details', `Viewing ${highlight.highlightTitle}`);
   }
 
   refreshDashboard(): void {
@@ -330,17 +230,5 @@ export class DashboardComponent implements OnInit {
 
   formatNumber(value: number): string {
     return value.toLocaleString();
-  }
-
-  getStatusClass(status: string): string {
-    const statusMap: { [key: string]: string } = {
-      'On Track': 'status-on-track',
-      'Delayed by 20%': 'status-delayed',
-      'At Risk': 'status-at-risk',
-      'Planning': 'status-planning',
-      'In Progress': 'status-in-progress',
-      'Done': 'status-done'
-    };
-    return statusMap[status] || '';
   }
 }

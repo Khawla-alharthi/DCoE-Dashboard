@@ -408,3 +408,56 @@ export class TeamActivitiesComponent implements OnInit {
   saveActivity(): void {
     if (this.activityForm.invalid) {
       this.activityForm.markAllAsTouched();
+      return;
+    }
+
+    const formValue = this.activityForm.value;
+    
+    if (this.isEditMode && this.selectedActivity) {
+      this.notificationService.showSuccess('Success', 'Activity updated successfully');
+      this.closeFormModal();
+    } else {
+      const newActivity: TeamActivity = {
+        activityId: Date.now(),
+        activityName: formValue.activityName,
+        teamId: parseInt(formValue.teamId),
+        activityDate: new Date(formValue.activityDate),
+        status: formValue.status,
+        description: formValue.description,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        createdBy: 'Current User',
+        team: this.teams.find(t => t.teamId === parseInt(formValue.teamId))
+      };
+      
+      this.activities.unshift(newActivity);
+      this.notificationService.showSuccess('Success', 'Activity created successfully');
+      this.closeFormModal();
+    }
+  }
+
+  confirmDelete(): void {
+    if (this.activityToDelete) {
+      this.activities = this.activities.filter(a => a.activityId !== this.activityToDelete!.activityId);
+      this.notificationService.showSuccess('Success', 'Activity deleted successfully');
+      this.deleteModalOpen = false;
+      this.activityToDelete = null;
+    }
+  }
+
+  getStatusBadgeClass(status: string): string {
+    const statusClasses = {
+      'Planning': 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300',
+      'In Progress': 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
+      'Done': 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300'
+    };
+    return statusClasses[status as keyof typeof statusClasses] || 'bg-gray-100 text-gray-800';
+  }
+
+  closeFormModal(): void {
+    this.formModalOpen = false;
+    this.activityForm.reset({ status: 'Planning' });
+    this.selectedActivity = null;
+    this.isEditMode = false;
+  }
+}

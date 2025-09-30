@@ -48,75 +48,92 @@ export class DashboardComponent implements OnInit {
   ideHighlights: IdeHighlight[] = [];
   teamActivities: TeamActivity[] = [];
 
-  // Chart configurations
-  dollarSavingsChartData: ChartConfiguration['data'] = {
+  // Dollar Savings Doughnut Chart
+  dollarSavingsChartData: ChartConfiguration<'doughnut'>['data'] = {
     labels: ['CP', 'EVD', 'Finance', 'HSE', 'IDC', 'IDD', 'ISGL', 'OSD', 'Petroleum', 'UWD'],
     datasets: [{
-      label: 'Dollar Savings',
-      data: [2.5, 1.8, 2.2, 1.5, 0.8, 1.2, 0.5, 1.0, 0.7, 0.3],
-      backgroundColor: 'rgba(34, 197, 94, 0.8)'
+      data: [12, 25, 15, 8, 5, 18, 3, 7, 4, 3],
+      backgroundColor: [
+        'rgba(59, 130, 246, 0.8)',
+        'rgba(16, 185, 129, 0.8)',
+        'rgba(245, 158, 11, 0.8)',
+        'rgba(239, 68, 68, 0.8)',
+        'rgba(139, 92, 246, 0.8)',
+        'rgba(236, 72, 153, 0.8)',
+        'rgba(20, 184, 166, 0.8)',
+        'rgba(251, 146, 60, 0.8)',
+        'rgba(34, 211, 238, 0.8)',
+        'rgba(248, 113, 113, 0.8)'
+      ],
+      borderWidth: 0,
+      hoverOffset: 4
     }]
   };
 
-  dollarSavingsChartOptions: ChartConfiguration['options'] = {
+  dollarSavingsChartOptions: ChartConfiguration<'doughnut'>['options'] = {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
       legend: {
-        display: false
-      },
-      title: {
-        display: false
-      }
-    },
-    scales: {
-      y: {
-        beginAtZero: true,
-        ticks: {
-          color: '#6b7280'
-        },
-        grid: {
-          color: 'rgba(229, 231, 235, 0.5)'
+        position: 'right',
+        labels: {
+          color: '#6b7280',
+          padding: 15,
+          font: {
+            size: 11
+          },
+          usePointStyle: true,
+          pointStyle: 'circle'
         }
       },
-      x: {
-        ticks: {
-          color: '#6b7280'
-        },
-        grid: {
-          display: false
+      tooltip: {
+        callbacks: {
+          label: (context) => {
+            const label = context.label || '';
+            const value = context.parsed || 0;
+            return `${label}: $${value}M`;
+          }
         }
       }
     }
   };
 
-  projectStatusChartData: ChartConfiguration['data'] = {
+  // Project Status Bar Chart
+  projectStatusChartData: ChartConfiguration<'bar'>['data'] = {
     labels: ['CP', 'EVD', 'Finance', 'HSE', 'IDC', 'IDD', 'ISGL', 'OSD', 'Petroleum', 'UWD'],
     datasets: [
       {
         label: 'Development',
         data: [3, 5, 4, 3, 2, 1, 2, 3, 1, 2],
-        backgroundColor: 'rgba(251, 191, 36, 0.8)'
+        backgroundColor: 'rgba(251, 191, 36, 0.8)',
+        borderRadius: 4,
+        maxBarThickness: 40
       },
       {
         label: 'Planning',
         data: [2, 3, 2, 1, 1, 2, 1, 2, 1, 1],
-        backgroundColor: 'rgba(59, 130, 246, 0.8)'
+        backgroundColor: 'rgba(59, 130, 246, 0.8)',
+        borderRadius: 4,
+        maxBarThickness: 40
       },
       {
         label: 'Production',
         data: [5, 12, 11, 3, 3, 21, 3, 7, 2, 9],
-        backgroundColor: 'rgba(34, 197, 94, 0.8)'
+        backgroundColor: 'rgba(34, 197, 94, 0.8)',
+        borderRadius: 4,
+        maxBarThickness: 40
       },
       {
         label: 'Under Discussion',
         data: [1, 0, 1, 0, 0, 1, 0, 1, 0, 0],
-        backgroundColor: 'rgba(168, 85, 247, 0.8)'
+        backgroundColor: 'rgba(168, 85, 247, 0.8)',
+        borderRadius: 4,
+        maxBarThickness: 40
       }
     ]
   };
 
-  projectStatusChartOptions: ChartConfiguration['options'] = {
+  projectStatusChartOptions: ChartConfiguration<'bar'>['options'] = {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
@@ -125,8 +142,15 @@ export class DashboardComponent implements OnInit {
         labels: {
           color: '#6b7280',
           usePointStyle: true,
-          padding: 15
+          padding: 15,
+          font: {
+            size: 11
+          }
         }
+      },
+      tooltip: {
+        mode: 'index',
+        intersect: false
       }
     },
     scales: {

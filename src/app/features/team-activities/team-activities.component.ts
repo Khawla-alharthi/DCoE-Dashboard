@@ -4,7 +4,6 @@ import { ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angula
 import { DataTableComponent, TableColumn, TableAction } from '../../shared/components/data-table/data-table.component';
 import { ModalComponent } from '../../shared/components/layout/modal.component';
 import { CardComponent } from '../../shared/components/card/card.component';
-import { LoadingSpinnerComponent } from '../../shared/components/ui/loading-spinner.component';
 import { AuthService } from '../../core/services/auth.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { TeamActivity } from '../../data-access/models/team-activity.model';
@@ -18,8 +17,7 @@ import { Team } from '../../data-access/models/team.model';
     ReactiveFormsModule,
     DataTableComponent,
     ModalComponent,
-    CardComponent,
-    LoadingSpinnerComponent
+    CardComponent
   ],
   template: `
     <div class="space-y-6">
@@ -318,7 +316,6 @@ export class TeamActivitiesComponent implements OnInit {
     { teamId: 8, teamName: 'IDE 8', description: 'Team 8', createdAt: new Date(), directorateId: 1 }
   ];
 
-  loading = false;
   detailModalOpen = false;
   formModalOpen = false;
   deleteModalOpen = false;

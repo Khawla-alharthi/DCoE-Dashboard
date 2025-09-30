@@ -1,7 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
-import { filter } from 'rxjs/operators';
+import { RouterOutlet } from '@angular/router';
 import { TopbarComponent } from '../../shared/components/layout/topbar.component';
 import { LayoutService } from '../../core/services/layout.service';
 
@@ -19,7 +18,7 @@ import { LayoutService } from '../../core/services/layout.service';
         <!-- Main Content -->
         <main class="h-full overflow-y-auto">
           <!-- Page Content -->
-          <div class="w-full">
+          <div class="w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <router-outlet></router-outlet>
           </div>
         </main>
@@ -29,9 +28,9 @@ import { LayoutService } from '../../core/services/layout.service';
 })
 export class MainLayoutComponent implements OnInit {
   layoutService = inject(LayoutService);
-  private router = inject(Router);
 
   ngOnInit(): void {
-    // Any initialization logic
+    // Hide sidebar by default
+    this.layoutService.setSidebarOpen(false);
   }
 }

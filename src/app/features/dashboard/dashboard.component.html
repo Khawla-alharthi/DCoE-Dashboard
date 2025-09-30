@@ -134,10 +134,58 @@
               </div>
               <div class="chart-content">
                 <!-- Placeholder for chart -->
-                <div class="chart-placeholder">
-                  <p>Chart component needed</p>
-                  <p>Install ng2-charts or similar chart library</p>
+                <!-- Charts Section -->
+        <div class="charts-section">
+          <div class="charts-grid">
+            <!-- Dollar Savings Chart -->
+            <div class="chart-card">
+              <div class="chart-header">
+                <h3 class="chart-title">
+                  <svg class="title-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                          d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                  </svg>
+                  Dollar Savings by Directorate
+                </h3>
+              </div>
+              <div class="chart-content">
+                <div class="chart-wrapper">
+                  <canvas baseChart
+                    [data]="dollarSavingsChartData"
+                    [options]="dollarSavingsChartOptions"
+                    type="bar">
+                  </canvas>
                 </div>
+                <div class="chart-summary">
+                  <div class="total-value">{{ formatCurrencyShort(stats.valueGenerated) }}</div>
+                  <div class="total-label">Total Savings</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Project Status Chart -->
+            <div class="chart-card">
+              <div class="chart-header">
+                <h3 class="chart-title">
+                  <svg class="title-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                          d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"/>
+                  </svg>
+                  Project Status by Directorate
+                </h3>
+              </div>
+              <div class="chart-content">
+                <div class="chart-wrapper">
+                  <canvas baseChart
+                    [data]="projectStatusChartData"
+                    [options]="projectStatusChartOptions"
+                    type="bar">
+                  </canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
               </div>
             </div>
           </div>

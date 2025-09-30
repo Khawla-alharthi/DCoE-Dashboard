@@ -1,39 +1,48 @@
 import { Component, inject, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
-import { LayoutService } from '../../../core/services/layout.service';
+import { RoleService } from '../../../core/services/role.service';
 import { ThemeToggleComponent } from '../ui/theme-toggle.component';
+
+interface NavItem {
+  label: string;
+  route: string;
+  requiredPermission?: string;
+}
 
 @Component({
   selector: 'app-topbar',
   standalone: true,
-  imports: [CommonModule, ThemeToggleComponent],
+  imports: [CommonModule, RouterModule, ThemeToggleComponent],
   template: `
     <header class="topbar">
       <div class="topbar-content">
-        <!-- Left Section -->
+        <!-- Left Section - Logo and Brand -->
         <div class="topbar-left">
-          <button 
-            (click)="layoutService.toggleSidebar()"
-            class="menu-btn"
-            aria-label="Toggle menu"
-          >
-            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-            </svg>
-          </button>
-          
-          <!-- Logo and Title -->
-          <div class="brand">
+          <div class="brand" [routerLink]="'/dashboard'" style="cursor: pointer;">
             <div class="logo">
               <span class="logo-text">PDO</span>
             </div>
             <div class="brand-text">
               <h1 class="brand-title">Digital Centre of Excellence</h1>
-              <p class="brand-subtitle">DCoE Dashboard - August 2025</p>
+              <p class="brand-subtitle">DCoE Dashboard</p>
             </div>
           </div>
         </div>
+
+        <!-- Center Navigation -->
+        <nav class="topbar-nav">
+          <a 
+            *ngFor="let item of getVisibleNavItems()"
+            [routerLink]="item.route"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{exact: item.route === '/dashboard'}"
+            class="nav-link"
+          >
+            {{ item.label }}
+          </a>
+        </nav>
 
         <!-- Right Section -->
         <div class="topbar-right">
@@ -109,47 +118,15 @@ import { ThemeToggleComponent } from '../ui/theme-toggle.component';
       display: flex;
       align-items: center;
       justify-content: space-between;
-      max-width: 100%;
+      max-width: 1600px;
       margin: 0 auto;
+      gap: 2rem;
     }
     
     .topbar-left {
       display: flex;
       align-items: center;
-      gap: 1rem;
-    }
-    
-    .menu-btn {
-      width: 40px;
-      height: 40px;
-      border-radius: 10px;
-      background: transparent;
-      border: none;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: background 0.2s;
-      
-      &:hover {
-        background: #f5f5f7;
-      }
-      
-      .dark & {
-        &:hover {
-          background: #3a3a3c;
-        }
-      }
-      
-      .icon {
-        width: 22px;
-        height: 22px;
-        color: #1d1d1f;
-        
-        .dark & {
-          color: #f5f5f7;
-        }
-      }
+      flex-shrink: 0;
     }
     
     .brand {
@@ -157,7 +134,7 @@ import { ThemeToggleComponent } from '../ui/theme-toggle.component';
       align-items: center;
       gap: 0.75rem;
       
-      @media (max-width: 640px) {
+      @media (max-width: 768px) {
         .brand-text {
           display: none;
         }
@@ -189,6 +166,7 @@ import { ThemeToggleComponent } from '../ui/theme-toggle.component';
         color: #1d1d1f;
         margin: 0;
         line-height: 1.2;
+        white-space: nowrap;
         
         .dark & {
           color: #f5f5f7;
@@ -207,10 +185,56 @@ import { ThemeToggleComponent } from '../ui/theme-toggle.component';
       }
     }
     
+    .topbar-nav {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex: 1;
+      justify-content: center;
+      overflow-x: auto;
+      
+      @media (max-width: 1200px) {
+        display: none;
+      }
+    }
+    
+    .nav-link {
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: #1d1d1f;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: all 0.2s;
+      
+      &:hover {
+        background: #f5f5f7;
+      }
+      
+      &.active {
+        background: #007aff;
+        color: #ffffff;
+      }
+      
+      .dark & {
+        color: #f5f5f7;
+        
+        &:hover {
+          background: #3a3a3c;
+        }
+        
+        &.active {
+          background: #0a84ff;
+        }
+      }
+    }
+    
     .topbar-right {
       display: flex;
       align-items: center;
       gap: 1rem;
+      flex-shrink: 0;
     }
     
     .user-section {
@@ -404,8 +428,29 @@ import { ThemeToggleComponent } from '../ui/theme-toggle.component';
 })
 export class TopbarComponent {
   authService = inject(AuthService);
-  layoutService = inject(LayoutService);
+  roleService = inject(RoleService);
   showUserMenu = false;
+
+  navItems: NavItem[] = [
+    { label: 'Overview', route: '/dashboard' },
+    { label: 'Programs', route: '/programs', requiredPermission: 'canManagePrograms' },
+    { label: 'RPA Projects', route: '/rpa-projects' },
+    { label: 'Highlights', route: '/ide-highlights' },
+    { label: 'Capability', route: '/capability-development' },
+    { label: 'Recognition', route: '/recognition', requiredPermission: 'canManageRecognition' },
+    { label: 'Activities', route: '/team-activities' },
+    { label: 'Teams', route: '/teams', requiredPermission: 'canManageTeams' },
+    { label: 'Users', route: '/users', requiredPermission: 'canManageUsers' }
+  ];
+
+  getVisibleNavItems(): NavItem[] {
+    return this.navItems.filter(item => {
+      if (!item.requiredPermission) {
+        return true;
+      }
+      return this.roleService.hasPermission(item.requiredPermission as any);
+    });
+  }
 
   toggleUserMenu(): void {
     this.showUserMenu = !this.showUserMenu;

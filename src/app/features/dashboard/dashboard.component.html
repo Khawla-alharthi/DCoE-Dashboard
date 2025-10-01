@@ -3,8 +3,9 @@
   <app-loading-spinner *ngIf="loading" />
   
   <div *ngIf="!loading" class="dashboard-content">
-    <!-- Overview Metrics -->
+    <!-- Digital Ambition Program Overview Metrics -->
     <div class="overview-section">
+      <h2 class="section-main-title">Overview</h2>
       <div class="metrics-grid">
         <div class="metric-card blue" (click)="openMetricDetails('products')">
           <div class="metric-icon">
@@ -62,8 +63,57 @@
       </div>
     </div>
 
+    <!-- Digital Ambition Program -->
+    <div class="section-card">
+      <div class="section-header">
+        <div class="header-info">
+          <h3 class="section-title">
+            <svg class="title-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                    d="M13 10V3L4 14h7v7l9-11h-7z"/>
+            </svg>
+            Digital Ambition Program
+          </h3>
+          <p class="section-subtitle">Program Status Overview</p>
+        </div>
+      </div>
+      
+      <div class="section-content">
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Program Name</th>
+                <th>Phase</th>
+                <th>Comments</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let program of digitalPrograms" (click)="viewProgram(program)">
+                <td>{{ program.programName }}</td>
+                <td>{{ program.phase }}</td>
+                <td>{{ program.comments }}</td>
+                <td>
+                  <span class="status-badge" 
+                        [ngClass]="{
+                          'status-on-track': program.status === 'On Track',
+                          'status-delayed': program.status === 'Delayed by 20%',
+                          'status-at-risk': program.status === 'At Risk'
+                        }">
+                    {{ program.status }}
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
     <!-- RPA Summary -->
     <div class="rpa-summary-section">
+      <h2 class="section-main-title">RPA Summary</h2>
       <div class="rpa-metrics-grid">
         <div class="metric-card green">
           <div class="metric-icon">
@@ -168,8 +218,8 @@
               </canvas>
             </div>
             <div class="chart-summary">
-              <div class="total-value">{{ formatCurrencyShort(stats.valueGenerated) }}</div>
-              <div class="total-label">Total Value Generated</div>
+              <div class="total-value">{{ formatCurrencyShort(11500000) }}</div>
+              <div class="total-label">Total</div>
             </div>
           </div>
         </div>
@@ -198,56 +248,102 @@
       </div>
     </div>
 
-    <!-- Digital Ambition Program -->
-    <div class="section-card">
-      <div class="section-header">
-        <div class="header-info">
-          <h3 class="section-title">
-            <svg class="title-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                    d="M13 10V3L4 14h7v7l9-11h-7z"/>
-            </svg>
-            Digital Ambition Program
-          </h3>
-          <p class="section-subtitle">Program Status Overview</p>
+    <!-- IDE Highlights -->
+    <div class="ide-highlights-section">
+      <div class="section-card">
+        <div class="section-header">
+          <div class="header-info">
+            <h3 class="section-title">
+              <svg class="title-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                      d="M13 10V3L4 14h7v7l9-11h-7z"/>
+              </svg>
+              IDE Highlights
+            </h3>
+          </div>
+        </div>
+        
+        <div class="section-content">
+          <div class="highlights-grid">
+            <div *ngFor="let highlight of ideHighlights" 
+                 class="highlight-item"
+                 (click)="openHighlightModal(highlight)">
+              <div class="highlight-indicator"></div>
+              <div class="highlight-content">
+                <h4 class="highlight-title">{{ highlight.highlightTitle }}</h4>
+              </div>
+              <svg class="highlight-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+              </svg>
+            </div>
+          </div>
         </div>
       </div>
-      
-      <div class="section-content">
-        <div class="table-container">
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>Program Name</th>
-                <th>Phase</th>
-                <th>Comments</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let program of digitalPrograms" (click)="viewProgram(program)">
-                <td>{{ program.programName }}</td>
-                <td>{{ program.phase }}</td>
-                <td>{{ program.comments }}</td>
-                <td>
-                  <span class="status-badge" 
-                        [ngClass]="{
-                          'status-on-track': program.status === 'On Track',
-                          'status-delayed': program.status === 'Delayed by 20%',
-                          'status-at-risk': program.status === 'At Risk'
-                        }">
-                    {{ program.status }}
-                  </span>
-                </td>
-                <td>
-                  <button class="action-btn action-view" (click)="viewProgram(program); $event.stopPropagation()">
-                    View
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+    </div>
+
+    <!-- Capability Development -->
+    <div class="capability-section">
+      <div class="section-card">
+        <div class="section-header">
+          <div class="header-info">
+            <h3 class="section-title">
+              <svg class="title-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                      d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+              </svg>
+              Capability Development
+            </h3>
+          </div>
+        </div>
+        
+        <div class="section-content">
+          <div class="capability-grid">
+            <div *ngFor="let card of capabilityCards" 
+                 class="capability-card"
+                 (click)="openCapabilityDetails(card)">
+              <!-- Header -->
+              <div class="capability-header">
+                <div class="capability-icon-wrapper">
+                  <div 
+                    class="capability-icon"
+                    [ngClass]="getIconBackgroundClass(card.iconColor)"
+                  >
+                    <div 
+                      [innerHTML]="card.icon"
+                      class="w-6 h-6"
+                      [ngClass]="getIconTextClass(card.iconColor)"
+                    ></div>
+                  </div>
+                  <div>
+                    <h4 class="capability-title">{{ card.title }}</h4>
+                    <div class="capability-count" [ngClass]="getCountTextClass(card.iconColor)">
+                      {{ card.count }}
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Status Badge -->
+                <span 
+                  *ngIf="card.status"
+                  class="capability-status-badge"
+                  [ngClass]="getCapabilityStatusBadgeClass(card.status)"
+                >
+                  {{ card.status }}
+                </span>
+              </div>
+
+              <!-- Description -->
+              <div class="capability-description">
+                <div 
+                  *ngFor="let item of card.description" 
+                  class="capability-item"
+                >
+                  <div class="capability-bullet"></div>
+                  <span>{{ item }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -266,9 +362,6 @@
             </h3>
             <p class="section-subtitle">Outstanding team contributions</p>
           </div>
-          <a routerLink="/recognition" class="view-all-link">
-            View All →
-          </a>
         </div>
         
         <div class="section-content">
@@ -278,59 +371,9 @@
             </div>
             <div class="recognition-info">
               <h4 class="recipient-name">Istabraq Al Ruhaili</h4>
-              <p class="recipient-team">🏆 Team IDE 8</p>
+              <p class="recipient-team">🏆 Team</p>
               <p class="recognition-category">AI Guidance - OQ Engagements</p>
             </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- IDE Highlights -->
-    <div class="ide-highlights-section">
-      <div class="section-card">
-        <div class="section-header">
-          <div class="header-info">
-            <h3 class="section-title">
-              <svg class="title-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                      d="M13 10V3L4 14h7v7l9-11h-7z"/>
-              </svg>
-              IDE Highlights
-            </h3>
-          </div>
-          <a routerLink="/ide-highlights" class="view-all-link">
-            View All →
-          </a>
-        </div>
-        
-        <div class="section-content">
-          <div class="highlights-grid">
-            <div *ngFor="let highlight of ideHighlights" 
-                 class="highlight-item"
-                 (click)="openHighlightModal(highlight)">
-              <div class="highlight-indicator"></div>
-              <div class="highlight-content">
-                <h4 class="highlight-title">{{ highlight.highlightTitle }}</h4>
-                <p class="highlight-description">{{ highlight.description }}</p>
-                <div class="highlight-meta">
-                  <span class="highlight-type">{{ highlight.highlightType }}</span>
-                  <span class="highlight-date">{{ highlight.highlightDate | date:'MMM d, yyyy' }}</span>
-                </div>
-              </div>
-              <svg class="highlight-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-              </svg>
-            </div>
-          </div>
-          
-          <div *ngIf="ideHighlights.length === 0" class="empty-state">
-            <svg class="empty-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                    d="M13 10V3L4 14h7v7l9-11h-7z"/>
-            </svg>
-            <p class="empty-message">No highlights available</p>
-            <p class="empty-submessage">Recent IDE highlights will appear here</p>
           </div>
         </div>
       </div>
@@ -349,11 +392,6 @@
               Team Building Activities
             </h3>
           </div>
-          <button *ngIf="authService.isLeader()" 
-                  (click)="openAddActivityModal()" 
-                  class="add-btn">
-            Add Activity
-          </button>
         </div>
         
         <div class="section-content">
@@ -365,7 +403,6 @@
                   <th>Date</th>
                   <th>Activity Name</th>
                   <th>Status</th>
-                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -382,11 +419,6 @@
                           }">
                       {{ activity.status }}
                     </span>
-                  </td>
-                  <td>
-                    <button class="action-btn action-view" (click)="openActivityModal(activity); $event.stopPropagation()">
-                      View
-                    </button>
                   </td>
                 </tr>
               </tbody>

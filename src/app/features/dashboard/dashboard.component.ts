@@ -7,11 +7,21 @@ import { ChartConfiguration } from 'chart.js';
 import { LoadingSpinnerComponent } from '../../shared/components/ui/loading-spinner.component';
 import { ThemeToggleComponent } from '../../shared/components/ui/theme-toggle.component';
 import { DashboardService, DashboardStats } from '../../data-access/services/api/dashboard-api.service';
+import { CapabilityDevelopmentService } from '../../data-access/repositories/capability-development.repository';
 import { AuthService } from '../../core/services/auth.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { Program } from '../../data-access/models/program.model';
 import { IdeHighlight } from '../../data-access/models/ide-highlight.model';
 import { TeamActivity } from '../../data-access/models/team-activity.model';
+
+interface CapabilityCard {
+  title: string;
+  count: number;
+  icon: string;
+  iconColor: string;
+  description: string[];
+  status?: string;
+}
 
 @Component({
   selector: 'app-dashboard',
@@ -28,6 +38,7 @@ import { TeamActivity } from '../../data-access/models/team-activity.model';
 })
 export class DashboardComponent implements OnInit {
   private dashboardService = inject(DashboardService);
+  private capabilityService = inject(CapabilityDevelopmentService);
   public authService = inject(AuthService);
   private notificationService = inject(NotificationService);
 
@@ -47,6 +58,7 @@ export class DashboardComponent implements OnInit {
   digitalPrograms: Program[] = [];
   ideHighlights: IdeHighlight[] = [];
   teamActivities: TeamActivity[] = [];
+  capabilityCards: CapabilityCard[] = [];
 
   // Dollar Savings Doughnut Chart
   dollarSavingsChartData: ChartConfiguration<'doughnut'>['data'] = {
@@ -178,6 +190,7 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadDashboardData();
+    this.loadCapabilityData();
   }
 
   private loadDashboardData(): void {
@@ -221,6 +234,82 @@ export class DashboardComponent implements OnInit {
         console.error('Error loading activities:', error);
       }
     });
+  }
+
+  private loadCapabilityData(): void {
+    this.capabilityCards = [
+      {
+        title: 'Staff Digital Muscle',
+        count: 26,
+        icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>',
+        iconColor: 'blue',
+        description: [
+          '8 PDO Staff graduated with Digital Muscle Program',
+          '3 Trainee Program',
+          '15 Data Science'
+        ],
+        status: 'In Progress'
+      },
+      {
+        title: 'On-the-Job Training - Lead',
+        count: 5,
+        icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>',
+        iconColor: 'purple',
+        description: [
+          'Software Engineer Business Knowledge',
+          '3 Trainee Program',
+          '2 Data Science Governance'
+        ],
+        status: 'In Progress'
+      },
+      {
+        title: 'CI Ideas',
+        count: 1,
+        icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364-.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>',
+        iconColor: 'yellow',
+        description: [
+          'Ideas collected and reviewed',
+          '1 Idea implemented'
+        ],
+        status: 'Completed'
+      },
+      {
+        title: 'Training Completed',
+        count: 3,
+        icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
+        iconColor: 'green',
+        description: [
+          'MIT Applied Data Science',
+          'PDO Data Science',
+          'Digital Project Management'
+        ],
+        status: 'Completed'
+      },
+      {
+        title: 'Training In Progress',
+        count: 1,
+        icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
+        iconColor: 'blue',
+        description: [
+          'Data scientists learning from Capability',
+          'Development Team'
+        ],
+        status: 'In Progress'
+      },
+      {
+        title: 'Certifications',
+        count: 4,
+        icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>',
+        iconColor: 'purple',
+        description: [
+          'Planning on General Fundamentals (PG-F)',
+          'Professional Azure Master (PAM-F)',
+          'Certified Business Analyst (CBA)',
+          'Certified Scrum Master (CSM)'
+        ],
+        status: 'In Progress'
+      }
+    ];
   }
 
   openMetricDetails(type: string): void {
@@ -267,5 +356,52 @@ export class DashboardComponent implements OnInit {
 
   openAddActivityModal(): void {
     this.notificationService.showInfo('Add Activity', 'Add activity functionality');
+  }
+
+  getIconBackgroundClass(color: string): string {
+    const classes = {
+      'blue': 'bg-blue-100 dark:bg-blue-900',
+      'purple': 'bg-purple-100 dark:bg-purple-900',
+      'yellow': 'bg-yellow-100 dark:bg-yellow-900',
+      'green': 'bg-green-100 dark:bg-green-900',
+      'red': 'bg-red-100 dark:bg-red-900'
+    };
+    return classes[color as keyof typeof classes] || classes['blue'];
+  }
+
+  getIconTextClass(color: string): string {
+    const classes = {
+      'blue': 'text-blue-600 dark:text-blue-400',
+      'purple': 'text-purple-600 dark:text-purple-400',
+      'yellow': 'text-yellow-600 dark:text-yellow-400',
+      'green': 'text-green-600 dark:text-green-400',
+      'red': 'text-red-600 dark:text-red-400'
+    };
+    return classes[color as keyof typeof classes] || classes['blue'];
+  }
+
+  getCountTextClass(color: string): string {
+    const classes = {
+      'blue': 'text-blue-600 dark:text-blue-400',
+      'purple': 'text-purple-600 dark:text-purple-400',
+      'yellow': 'text-yellow-600 dark:text-yellow-400',
+      'green': 'text-green-600 dark:text-green-400',
+      'red': 'text-red-600 dark:text-red-400'
+    };
+    return classes[color as keyof typeof classes] || classes['blue'];
+  }
+
+  getCapabilityStatusBadgeClass(status: string): string {
+    const classes = {
+      'Completed': 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
+      'In Progress': 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300',
+      'Planned': 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
+      'On Hold': 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
+    };
+    return classes[status as keyof typeof classes] || classes['In Progress'];
+  }
+
+  openCapabilityDetails(card: CapabilityCard): void {
+    this.notificationService.showInfo(card.title, `Viewing details for ${card.title} program`);
   }
 }
